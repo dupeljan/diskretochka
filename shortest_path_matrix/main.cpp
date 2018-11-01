@@ -9,12 +9,15 @@ using namespace std;
 
 vector < int > shortest_patch(int i, int j, vector < vector < int > > next  );
 
+int dig_count(int a){
+	return ( a )? round(log(a) / log(10)  ): 1;
+}
 int main(){
 	fstream in;
 	in.open(INP_PATH, fstream::in);
 	
-	int n;
-	in >> n;
+	int n, m;
+	in >> n >> m ;
 	
 	vector < vector < int  >  > p , next;
 	
@@ -26,7 +29,7 @@ int main(){
 
 
 	int inf = 0;
-	while ( in ){
+	while ( m-- ){
 		int a,b,w;
 		in >> a >> b >> w;
 		a--;
@@ -35,14 +38,10 @@ int main(){
 		p[a][b] = w;
 		inf += abs(w);
 	}
+	
 
 
-	for( int i = 0; i < n; i++ )
-		for( int j = 0; j < n; j++)
-			if( !p[i][j] )
-				p[i][j] = inf + 1;
-	
-	
+
 
 	// Init matrix of shortest path
 	next.resize(n);
@@ -52,6 +51,14 @@ int main(){
 				next[i][j] = ( p[i][j] ) ? j : -1;
 	}
 
+	for( int i = 0; i < n; i++ )
+		for( int j = 0; j < n; j++)
+			if( !p[i][j]  )
+				p[i][j] = inf + 1;
+	
+	
+
+
 	for ( int k = 0; k < n; k++)
 		for ( int i = 0; i < n; i++ )
 			for ( int j = 0; j < n; j++ )
@@ -59,23 +66,23 @@ int main(){
 					p[i][j] = p[i][k] + p[k][j];
 					next[i][j] = next[i][k];
 				}
-
 	// Output p
 	fstream out;
 	out.open(OUTP_PATH, fstream::out);
 	int max_dig_count = 3;
 	for ( int i = 0; i < n; i++ ){
 		for ( int j = 0; j < n; j++ ){
-			out << p[i][j] ;
-			for (int k = 0; k < max_dig_count - log(p[i][j]) / log(10); k++)
-				out << ' ';
+			out << p[i][j] << ' ' ;
+			//for (int k = 0; k < max_dig_count - dig_count(p[i][j]); k++)
+			//	out << ' ';
 			 
 		}
 
 		out << '\n';
 	}
 	
-	out << '\n';
+	cout << '\n';
+
 
 	// Output shortest_patches
 	for( int i = 0; i < n; i++ )
@@ -88,7 +95,7 @@ int main(){
 		}
 
 
-}
+}	
 
 vector < int > shortest_patch(int i, int j ,vector < vector < int > > next ){
 	vector < int > res;
