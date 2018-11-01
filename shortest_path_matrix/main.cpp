@@ -10,7 +10,14 @@ using namespace std;
 vector < int > shortest_patch(int i, int j, vector < vector < int > > next  );
 
 int dig_count(int a){
-	return ( a )? round(log(a) / log(10)  ): 1;
+	if (!a)
+		return 1;
+	int res = 0;
+	do { 
+		res++;
+		a /= 10;
+	}while ( a );
+	return res;
 }
 int main(){
 	fstream in;
@@ -34,7 +41,6 @@ int main(){
 		in >> a >> b >> w;
 		a--;
 		b--;
-		cout << a << ' ' << b << ' ' << w << '\n';
 		p[a][b] = w;
 		inf += abs(w);
 	}
@@ -72,16 +78,16 @@ int main(){
 	int max_dig_count = 3;
 	for ( int i = 0; i < n; i++ ){
 		for ( int j = 0; j < n; j++ ){
-			out << p[i][j] << ' ' ;
-			//for (int k = 0; k < max_dig_count - dig_count(p[i][j]); k++)
-			//	out << ' ';
+			out << p[i][j] ;
+			for (int k = 0; k <= max_dig_count - dig_count(p[i][j]); k++)
+				out << ' ';
 			 
 		}
 
 		out << '\n';
 	}
 	
-	cout << '\n';
+	out << '\n';
 
 
 	// Output shortest_patches
