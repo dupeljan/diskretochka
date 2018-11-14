@@ -59,7 +59,7 @@ int main(){
 	for( int i = 0; i < n; i++ )
 		for( int j = 0; j < n; j++)
 			if( !p[i][j]  )
-				p[i][j] = inf ;
+				p[i][j] = - inf ;
 	
 	
 
@@ -67,8 +67,8 @@ int main(){
 	for ( int k = 0; k < n; k++)
 		for ( int i = 0; i < n; i++ )
 			for ( int j = 0; j < n; j++ )
-				if ( p[i][k] + p[k][j] < p[i][j]){
-					p[i][j] = p[i][k] + p[k][j];
+				if ( min(p[i][k] , p[k][j] ) > p[i][j] ){
+					p[i][j] = min(p[i][k] , p[k][j] );
 					next[i][j] = next[i][k];
 				}
 	// Output p
@@ -78,7 +78,7 @@ int main(){
 	for ( int i = 0; i < n; i++ ){
 		for ( int j = 0; j < n; j++ ){
 			#ifdef INF
-			out << ( ( p[i][j] ==  inf )? "inf" : to_string(p[i][j]).data() ) << ' ';
+			out << ( ( p[i][j] ==  -inf )? "inf" : to_string(p[i][j]).data() ) << ' ';
 			#else
 			out << p[i][j];	
 			#endif
