@@ -6,6 +6,7 @@
 #define INP_PATH  "input.txt"
 #define OUTP_PATH "output.txt"
 #define INF true
+#define ORIENTED 0
 using namespace std;
 
 vector < int > shortest_patch(int i, int j, vector < vector < int > > next  );
@@ -43,6 +44,9 @@ int main(){
 		a--;
 		b--;
 		p[a][b] = w;
+		#if ! ORIENTED
+		p[b][a] = w;
+		#endif
 		inf += abs(w);
 	}
 	
@@ -58,7 +62,7 @@ int main(){
 	inf++;
 	for( int i = 0; i < n; i++ )
 		for( int j = 0; j < n; j++)
-			if( !p[i][j]  )
+			if( !p[i][j]  && i != j )
 				p[i][j] = inf ;
 	
 	

@@ -50,44 +50,50 @@ int main(){
 		inf += abs(w);
 	}
 	
-
-	// Init matrix of shortest path
-	next.resize(n);
-	for ( int i = 0; i < n; i++ ){
-		next[i].resize(n);
-		for ( int j = 0; j < n; j++ )
-				next[i][j] = ( p[i][j] ) ? j : -1;
-	}
-
+	
 	inf++;
 	for( int i = 0; i < n; i++ )
 		for( int j = 0; j < n; j++)
-			if( !p[i][j]  )
-				 p[i][j] = - inf ;
+			if( !p[i][j] && i != j )
+				p[i][j] = inf ;
 	
 
 	for ( int k = 0; k < n; k++)
 		for ( int i = 0; i < n; i++ )
 			for ( int j = 0; j < n; j++ )
-				if ( i != j && min(p[i][k] , p[k][j] ) > p[i][j] ){
-					p[i][j] = min(p[i][k] , p[k][j] );
-					next[i][j] = next[i][k];
+				if ( p[i][k] + p[k][j] < p[i][j]){
+					p[i][j] = p[i][k] + p[k][j];
 				}
-	// Output p
+	
+	// P - matrix of shortest pathes
+	int center[3] = { inf , 0 }; // Value, num
+	int medium[3] = { inf , 0 }; // Value, num
+	for(int i = 0; i < n; i++){ // Compute min
+		
+		int local_max = 0;        
+		int local_sum = 0;
+		for(int j = 0; j < n; local_sum+=p[i][j] , j++ )
+			local_max = max( local_max , p[i][j]);
+		
+		if ( center[0] > local_max){
+			center[0] = local_max;
+			center[1] = i;
+		}
+
+		if ( medium[0] > local_sum ){
+			medium[0] = local_sum;
+			medium[1] = i;
+		}
+	}
+
 	fstream out;
 	out.open(OUTP_PATH, fstream::out);
+		// Output p
 	int max_dig_count = 3;
-	/*
-	for( int i = 1; i <= n; i++){
-		out << i;
-		for (int k = 0; k <= max_dig_count - dig_count(i) + 1; k++)
-				out << ' ';
-	}
-	out << endl << endl; */
 	for ( int i = 0; i < n; i++ ){
 		for ( int j = 0; j < n; j++ ){
 			#ifdef INF
-			out << ( ( p[i][j] ==  -inf )? "inf" : to_string(p[i][j]).data() ) << ' ';
+			out << ( ( p[i][j] ==  inf )? "inf" : to_string(p[i][j]).data() ) << ' ';
 			#else
 			out << p[i][j];	
 			#endif
@@ -103,31 +109,8 @@ int main(){
 	out << '\n';
 
 
-	// Output shortest_patches
-	for( int i = 0; i < n; i++ )
-		for( int j = i+1; j < n; j++ ){
-			vector <int> cur = shortest_patch( i , j , next );
-			out << i + 1 << "->" << j + 1 << ':';
-			for ( auto it : cur )
-				out << ' ' << it;
-			out << '\n'; 
-		}
-
+	out << "Center: " << center[1] << endl;
+	out << "Medium: "   << medium[1] << endl;
+	
 
 }	
-
-vector < int > shortest_patch(int i, int j ,vector < vector < int > > next ){
-	vector < int > res;
-	if ( next[i][j] == -1 )
-		return res;
-	
-	int c = i;
-	while ( c != j ){
-		res.push_back( c + 1 );
-		c = next[c][j];
-	}
-	res.push_back(j+1);
-
-	return res;
-	
-}
